@@ -2,7 +2,6 @@
   "name": "notes-ng",
   "version": "0.0.0",
   "main": "src/electron/main.js",
-  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

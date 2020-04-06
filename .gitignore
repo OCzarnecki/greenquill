@@ -40,10 +40,11 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+todo.md
 
 # System Files
 .DS_Store
 Thumbs.db
 
 # Application files
-/data
+/.greenquill

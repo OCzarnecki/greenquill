@@ -1,0 +1,21 @@
+<!--  Folder label  -->
+<div [ngStyle]="{'text-indent': indent * 0.5 + 'em'}" class="tree-entry folder-entry ellipsis" (click)="onClickFolder()">
+  <img *ngIf="!isOpen" alt="" height="10" src="assets/arrow-right.svg" width="10" class="expander-arrow">
+  <img *ngIf="isOpen" alt="" height="10" src="assets/arrow-down.svg" width="10" class="expander-arrow">
+  <span class="ellipsis">{{folder.name}}</span>
+</div>
+
+<!--  Folder contents, recursive  -->
+<div *ngIf="isOpen">
+  <app-folder-node *ngFor="let subFolder of folder.subFolders"
+                   [folder]="subFolder"
+                   [indent]="indent + 1"
+                   class="ellipsis"></app-folder-node>
+  <div *ngFor="let note of folder.notes"
+       [ngStyle]="{'padding-left': (indent + 1) * 0.5 + 'em'}"
+       class="tree-entry note-entry ellipsis"
+       routerLink="/note/{{note.id}}"
+       routerLinkActive="active">
+    {{note.title.substr(0, 10)}}
+  </div>
+</div>
