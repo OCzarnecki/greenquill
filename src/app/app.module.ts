@@ -7,13 +7,15 @@ import { NotebookTreeComponent } from './notebook-tree/notebook-tree.component';
 import { FolderNodeComponent } from './notebook-tree/folder-node/folder-node.component';
 import { AppRoutingModule } from './app-routing.module';
 import { EditorComponent } from './editor/editor.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NotebookTreeComponent,
     FolderNodeComponent,
-    EditorComponent
+    EditorComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

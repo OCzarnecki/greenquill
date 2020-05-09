@@ -1,0 +1,30 @@
+#popup-new-note {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+
+  width: 15em;
+  height: 1.5em;
+
+  display: flow;
+
+  #content {
+    position: relative;
+    left: -50%;
+    top: -50%;
+
+    display: flex;
+    align-items: stretch;
+    align-content: stretch;
+
+    textarea {
+      resize: none;
+      flex-grow: 1;
+    }
+
+    button {
+      min-width: 3em;
+      flex-grow: 0;
+    }
+  }
+}

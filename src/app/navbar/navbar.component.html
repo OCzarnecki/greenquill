@@ -1,0 +1,12 @@
+<nav>
+  <button (click)="openAddNotePopup()">+</button>
+</nav>
+
+<!-- Modal popup for creating a new note. -->
+<div id="popup-new-note" #newNoteDialog>
+  <div id="content"> <!-- Two nested divs for centered, absolute positioning. -->
+    <input type="text" placeholder="Note title..." [(ngModel)]="newNoteName" #newNoteNameInput
+           (keydown)="onKeyDown($event)"/>
+    <button (click)="createNewNote()">Ok</button>
+  </div>
+</div>

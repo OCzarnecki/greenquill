@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {NoteContent} from '../..';
 import {Notebook} from '../model/notebook';
+import {v4 as uuidv4} from 'uuid';
 
 /**
  * Service for saving/loading notes from disc.
@@ -21,11 +22,11 @@ export class StorageService {
     this.init();
   }
 
-  private readonly _root = ".greenquill/";
+  private readonly _root = '.greenquill/';
 
   private init() {
     if (!this.fs.existsSync(this._root)) {
-      this.fs.mkdirSync(this._root + "notes", {recursive: true})
+      this.fs.mkdirSync(this._root + 'notes', {recursive: true});
     }
   }
 
@@ -46,17 +47,31 @@ export class StorageService {
   public saveNoteContent(note: NoteContent) {
     this.fsPromises.writeFile(
       `${this._root}notes/${note.id}.json`,
-      JSON.stringify(note.serialize())).catch((err) => console.error(err)
-    );
+      JSON.stringify(note.serialize())).catch((err) => console.error(err));
   }
 
   /**
    * Loads the notebook index from disc.
    */
-  public loadNotebook(): Promise<Notebook> {
-    return this.fsPromises.readFile(this._root + "notebook.json", 'utf-8').then(value => {
+  public loadNotebook(changeCallback): Promise<Notebook> {
+    return this.fsPromises.readFile(`${this._root}notebook.json`, 'utf-8').then(value => {
       let json = JSON.parse(value);
-      return Notebook.deserialize(json);
+      return Notebook.deserialize(json, changeCallback);
     });
+  }
+
+  public writeNotebook(notebook: Notebook) {
+    this.fsPromises.writeFile(
+      `${this._root}notebook.json`,
+      JSON.stringify(notebook.serialize())
+    ).catch(err => console.error(err));
+  }
+
+  public createNoteContent(): Promise<NoteContent> {
+    const id = uuidv4();
+    const noteContent = new NoteContent();
+    noteContent.id = id;
+    this.saveNoteContent(noteContent);
+    return new Promise<NoteContent>(resolve => resolve(noteContent));
   }
 }

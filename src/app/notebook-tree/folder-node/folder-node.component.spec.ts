@@ -43,12 +43,12 @@ describe('FolderNodeComponent', () => {
   });
 
   it('should display the folder name', function() {
-    setFolder(new Folder('The Folder Name', [], []));
+    setFolder(new Folder('The Folder Name', [], [], void 0));
     expect(findRoot().querySelector('span').textContent).toBe('The Folder Name');
   });
 
   it('should open/close when clicked', function() {
-    setFolder(new Folder('name', [], []));
+    setFolder(new Folder('name', [], [], void 0));
     expect(component.isOpen).toBe(false, 'closed initially');
     findRoot().click();
     fixture.detectChanges();
@@ -58,8 +58,9 @@ describe('FolderNodeComponent', () => {
   it('should display its contents iff open', function() {
     setFolder(new Folder(
       'root',
-      [new Folder('sub', [], [])],
-      [new NoteInfo('ID-1234', 'note')]
+      [new Folder('sub', [], [], void 0)],
+      [new NoteInfo('ID-1234', 'note', void 0)],
+      void 0
     ));
     expect(findRoot().querySelector('.folder-entry')).toBeFalsy('No folder displayed initially');
     expect(findRoot().querySelector('.note-entry')).toBeFalsy('No note displayed initially');

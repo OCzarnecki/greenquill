@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Folder} from '../model/folder';
-import {StorageService} from '../desktop/storage.service';
+import {NotebookService} from '../notebook.service';
 
 /**
  * Navigation tree for selecting individual notes.
@@ -11,18 +11,17 @@ import {StorageService} from '../desktop/storage.service';
   styleUrls: ['./notebook-tree.component.less']
 })
 export class NotebookTreeComponent implements OnInit {
-  folders: Folder[];
-  private storage: StorageService;
+  folders: readonly Folder[];
 
-  constructor(storage: StorageService) {
-    this.storage = storage;
-  }
-
-  ngOnInit(): void {
+  constructor(notebookService: NotebookService) {
     this.folders = [];
-    this.storage.loadNotebook().then(notebook => {
-      return this.folders = notebook.folders;
+    notebookService.notebook$.subscribe(notebook => {
+      if (notebook) {
+        this.folders = notebook.folders;
+      }
     });
   }
 
+  ngOnInit(): void {
+  }
 }

@@ -3,11 +3,11 @@ import {NoteInfo} from './note-info';
 
 describe('Folder', () => {
   it('should create an instance', () => {
-    expect(new Folder('name', [], [])).toBeTruthy();
+    expect(new Folder('name', [], [], void 0)).toBeTruthy();
   });
 
   it('should deserialize without children', function() {
-    const folder = Folder.deserialize({name: 'folder-name', subFolders: [], notes: []});
+    const folder = Folder.deserialize({name: 'folder-name', subFolders: [], notes: []}, void 0);
     expect(folder.name).toBe('folder-name');
     expect(folder.notes).toEqual([]);
     expect(folder.subFolders).toEqual([]);
@@ -26,12 +26,12 @@ describe('Folder', () => {
       ]
     };
 
-    const folder = Folder.deserialize(data);
+    const folder = Folder.deserialize(data, void 0);
 
     expect(folder.name).toBe('root');
-    expect(folder.subFolders).toContain(new Folder('sub1', [], []));
-    expect(folder.subFolders).toContain(new Folder('sub2', [], []));
-    expect(folder.notes).toContain(new NoteInfo('1', 'Note One'));
-    expect(folder.notes).toContain(new NoteInfo('2', 'Note Two'));
+    expect(folder.subFolders).toContain(new Folder('sub1', [], [], void 0));
+    expect(folder.subFolders).toContain(new Folder('sub2', [], [], void 0));
+    expect(folder.notes).toContain(new NoteInfo('1', 'Note One', void 0));
+    expect(folder.notes).toContain(new NoteInfo('2', 'Note Two', void 0));
   });
 });

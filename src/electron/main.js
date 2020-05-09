@@ -27,6 +27,7 @@ function createWindow() {
  * Entry point for the desktop application.
  */
 function start() {
+  app.allowRendererProcessReuse = true;
   app.whenReady().then(createWindow);
 }
 

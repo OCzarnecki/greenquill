@@ -1,4 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, HostListener} from '@angular/core';
+import {KeybindingService} from './keybinding.service';
+import {ShutdownHookService} from './desktop/shutdown-hook.service';
 
 /**
  * Root component.
@@ -9,6 +11,19 @@ import {Component} from '@angular/core';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  constructor() {
+  constructor(
+    private keybindingService: KeybindingService,
+    private shutdownHookService: ShutdownHookService
+  ) {
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onGlobalKeydown($event: KeyboardEvent) {
+    this.keybindingService.handleKeypress($event);
+  }
+
+  @HostListener('window:beforeunload')
+  beforeUnload(): void {
+    this.shutdownHookService.callShutdownHooks();
   }
 }

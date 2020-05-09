@@ -1,4 +1,4 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {Folder} from '../model/folder';
 import {StorageServiceStub} from '../testing/storage-service-stub';
@@ -10,7 +10,7 @@ describe('NotebookTreeComponent', () => {
   let fixture: ComponentFixture<NotebookTreeComponent>;
   let component: NotebookTreeComponent;
   let storage = new StorageServiceStub();
-  const folders = [new Folder('root', [], [])];
+  const folders = [new Folder('root', [], [], void 0)];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
