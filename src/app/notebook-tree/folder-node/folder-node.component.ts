@@ -19,8 +19,11 @@ export class FolderNodeComponent {
   constructor(private appContextService: AppContextService) {
   }
 
-  onClickFolder(): void {
+  onClickExpander(): void {
     this.isOpen = !this.isOpen;
+  }
+
+  onClickFolder(): void {
     this.appContextService.selectedFolder = this.folder;
   }
 

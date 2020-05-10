@@ -1,15 +1,16 @@
 <!--  Folder label  -->
-<div (click)="onClickFolder()"
-     [ngStyle]="{'text-indent': indent * 0.5 + 'em'}"
+<div [ngStyle]="{'text-indent': indent * 0.5 + 'em'}"
      [class.active]="isSelected()"
      class="tree-entry folder-entry ellipsis">
-  <img *ngIf="!isOpen" alt="" height="10" src="assets/arrow-right.svg" width="10" class="expander-arrow">
-  <img *ngIf="isOpen" alt="" height="10" src="assets/arrow-down.svg" width="10" class="expander-arrow">
-  <span class="ellipsis">{{folder.name}}</span>
+  <span id="expander" (click)="onClickExpander()">
+    <img *ngIf="!isOpen" alt="" height="10" src="assets/arrow-right.svg" width="10" class="expander-arrow">
+    <img *ngIf="isOpen" alt="" height="10" src="assets/arrow-down.svg" width="10" class="expander-arrow">
+  </span>
+  <span (click)="onClickFolder()" id="folder-name-label" class="ellipsis">{{folder.name}}</span>
 </div>
 
 <!--  Folder contents, recursive  -->
-<div *ngIf="isOpen">
+<div id="folder-contents" *ngIf="isOpen">
   <!-- Subfolders -->
   <app-folder-node *ngFor="let subFolder of folder.subFolders"
                    [folder]="subFolder"

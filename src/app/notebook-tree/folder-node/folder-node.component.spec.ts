@@ -1,12 +1,14 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {FolderNodeComponent} from './folder-node.component';
-import {Folder} from '../../model/folder'
+import {Folder} from '../../model/folder';
 import {NoteInfo} from '../../model/note-info';
+import {AppContextService} from '../../app-context.service';
 
 describe('FolderNodeComponent', () => {
   let component: FolderNodeComponent;
   let fixture: ComponentFixture<FolderNodeComponent>;
+  let appContextService: AppContextService;
 
   function findRoot() {
     return fixture.nativeElement.querySelector('.folder-entry');
@@ -22,13 +24,18 @@ describe('FolderNodeComponent', () => {
     fixture.detectChanges();
   }
 
-  function clickRoot(): void {
-    click(findRoot());
+  function clickRootExpander(): void {
+    click(findRoot().querySelector('#expander'));
   }
 
   beforeEach(async(() => {
+    appContextService = new AppContextService();
+
     TestBed.configureTestingModule({
-      declarations: [FolderNodeComponent]
+      declarations: [FolderNodeComponent],
+      providers: [
+        {provide: AppContextService, useValue: appContextService}
+      ]
     })
       .compileComponents();
   }));
@@ -44,13 +51,13 @@ describe('FolderNodeComponent', () => {
 
   it('should display the folder name', function() {
     setFolder(new Folder('The Folder Name', [], [], () => void 0));
-    expect(findRoot().querySelector('span').textContent).toBe('The Folder Name');
+    expect(findRoot().querySelector('#folder-name-label').textContent).toBe('The Folder Name');
   });
 
-  it('should open/close when clicked', function() {
+  it('should open/close when expander clicked', function() {
     setFolder(new Folder('name', [], [], () => void 0));
     expect(component.isOpen).toBe(false, 'closed initially');
-    findRoot().click();
+    findRoot().querySelector('#expander').click();
     fixture.detectChanges();
     expect(component.isOpen).toBe(true, 'closed initially');
   });
@@ -65,12 +72,12 @@ describe('FolderNodeComponent', () => {
     expect(findRoot().querySelector('.folder-entry')).toBeFalsy('No folder displayed initially');
     expect(findRoot().querySelector('.note-entry')).toBeFalsy('No note displayed initially');
 
-    clickRoot();
+    clickRootExpander();
 
     expect(
       fixture.nativeElement
-        .querySelector('.folder-entry + div')
-        .querySelector('span')
+        .querySelector('#folder-contents')
+        .querySelector('#folder-name-label')
         .textContent
         .trim())
       .toEqual('sub', 'Sub-folder should be displayed');
@@ -81,9 +88,19 @@ describe('FolderNodeComponent', () => {
         .trim())
       .toEqual('note', 'Contained note should be displayed');
 
-    clickRoot();
+    clickRootExpander();
 
     expect(findRoot().querySelector('.folder-entry')).toBeFalsy('The sub-folder should not be shown');
     expect(findRoot().querySelector('.note-entry')).toBeFalsy('The note should not be shown');
+  });
+
+  it('should modify the appContext when selected', () => {
+    const folder = new Folder('name', [], [], () => void 0);
+    setFolder(folder);
+
+    findRoot().querySelector('#folder-name-label').click();
+    fixture.detectChanges();
+
+    expect(appContextService.selectedFolder).toEqual(folder);
   });
 });
