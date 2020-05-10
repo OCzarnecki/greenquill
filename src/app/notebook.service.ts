@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {shareReplay} from 'rxjs/operators';
 import {NoteInfo} from './model/note-info';
 import {ShutdownHookService} from './desktop/shutdown-hook.service';
+import {Folder} from './model/folder';
 
 /**
  * Service that provides access to the notebook index.
@@ -38,19 +39,16 @@ export class NotebookService {
   }
 
   /**
-   * Create a new note with the provided name. Currently, it is undefined in which directory the note will end up.
+   * Create a new note with the provided name in the specified directory.
    *
    * @param name the display title of the note
+   * @param parent the folder the note will be placed in
    */
-  public createNote(name: string) {
-    this.storageService.createNoteContent().then(noteContent => {
+  public createNote(name: string, parent: Folder) {
+    this.storageService.createNoteContent().subscribe(noteContent => {
       console.debug('Created new NoteContent!');
-      this.notebook$.subscribe(value => {
-        console.debug('Received shared notebook value');
-        value.folders[0].addNote(new NoteInfo(noteContent.id, name, this._dirtyCallback));
-      });
+      parent.addNote(new NoteInfo(noteContent.id, name, this._dirtyCallback));
     });
-    this.markDirty();
   }
 
   /**

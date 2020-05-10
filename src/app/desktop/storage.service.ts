@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {NoteContent} from '../..';
 import {Notebook} from '../model/notebook';
 import {v4 as uuidv4} from 'uuid';
+import {Observable} from 'rxjs';
 
 /**
  * Service for saving/loading notes from disc.
@@ -67,11 +68,13 @@ export class StorageService {
     ).catch(err => console.error(err));
   }
 
-  public createNoteContent(): Promise<NoteContent> {
-    const id = uuidv4();
-    const noteContent = new NoteContent();
-    noteContent.id = id;
-    this.saveNoteContent(noteContent);
-    return new Promise<NoteContent>(resolve => resolve(noteContent));
+  public createNoteContent(): Observable<NoteContent> {
+    return new Observable<NoteContent>(subscriber => {
+      const id = uuidv4();
+      const noteContent = new NoteContent();
+      noteContent.id = id;
+      this.saveNoteContent(noteContent);
+      subscriber.next(noteContent);
+    });
   }
 }

@@ -10,7 +10,7 @@ describe('NotebookTreeComponent', () => {
   let fixture: ComponentFixture<NotebookTreeComponent>;
   let component: NotebookTreeComponent;
   let storage = new StorageServiceStub();
-  const folders = [new Folder('root', [], [], void 0)];
+  const folders = [new Folder('root', [], [], () => void 0)];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

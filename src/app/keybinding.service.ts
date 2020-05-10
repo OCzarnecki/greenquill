@@ -44,7 +44,6 @@ export class KeybindingService {
    * @param $event the KeyboardEvent
    */
   public handleKeypress($event: KeyboardEvent) {
-    console.debug($event.key)
     this.bindings.forEach((binding) => {
       if (binding.key == $event.key
         && binding.alt == $event.altKey

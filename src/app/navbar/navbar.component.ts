@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {KeybindingService} from '../keybinding.service';
 import {NotebookService} from '../notebook.service';
+import {AppContextService} from '../app-context.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +15,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   constructor(
     private keybindingService: KeybindingService,
-    private notebookService: NotebookService
+    private notebookService: NotebookService,
+    private appContextService: AppContextService
   ) {
     keybindingService.registerKeybinding('n', () => this.openAddNotePopup(), false, true, false);
   }
@@ -47,7 +49,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   createNewNote() {
     this.hideAddNotePopup();
     console.debug('Create new note with name: ' + this.newNoteName);
-    this.notebookService.createNote(this.newNoteName.trim());
+    const folder = this.appContextService.selectedFolder
+    if (folder) {
+      this.notebookService.createNote(this.newNoteName.trim(), folder);
+    } else {
+      console.debug('Cannot create note: no folder selected')
+    }
   }
 
   hideAddNotePopup() {

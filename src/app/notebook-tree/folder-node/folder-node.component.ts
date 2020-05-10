@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Folder} from '../../model/folder';
+import {AppContextService} from '../../app-context.service';
 
 /**
  * Component for drawing a folder, possibly with its contents.
@@ -15,10 +16,20 @@ export class FolderNodeComponent {
   @Input() indent: number;
   isOpen: boolean = false;
 
-  constructor() {
+  constructor(private appContextService: AppContextService) {
   }
 
   onClickFolder(): void {
     this.isOpen = !this.isOpen;
+    this.appContextService.selectedFolder = this.folder;
+  }
+
+  onClickNote() {
+    // note: routing happens via HTML attribute
+    this.appContextService.selectedFolder = this.folder
+  }
+
+  isSelected(): boolean {
+    return this.folder === this.appContextService.selectedFolder
   }
 }
