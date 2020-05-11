@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NoteContent} from '../..';
-import {StorageService} from '../desktop/storage.service';
+import {NoteInfo} from '../model/note-info';
+import {NotebookService} from '../notebook.service';
 
 /**
  * The note editor.
@@ -12,14 +13,15 @@ import {StorageService} from '../desktop/storage.service';
   styleUrls: ['./editor.component.less']
 })
 export class EditorComponent implements OnInit {
-  note: NoteContent;
+  noteContent: NoteContent;
+  noteInfo: NoteInfo
 
   constructor(
-    private storage: StorageService,
+    private notebookService: NotebookService,
     private route: ActivatedRoute
   ) {
-    this.note = new NoteContent();
-    this.note.content = 'Type something here!';
+    this.noteContent = new NoteContent();
+    this.noteContent.content = 'Type something here!';
   }
 
   /**
@@ -30,13 +32,9 @@ export class EditorComponent implements OnInit {
       const id = value.get('id');
 
       console.debug(`Loading note with id ${id}`);
-      this.storage.loadNoteContent(id)
-        .then(note => {
-          this.note = note;
-        })
-        .catch(reason => {
-          console.error('Could not load note: ' + reason);
-        });
+      this.noteInfo = this.notebookService.getNoteInfo(id);
+      this.notebookService.loadNoteContent$(this.noteInfo)
+        .subscribe(noteContent => this.noteContent = noteContent);
     });
   }
 
@@ -44,6 +42,6 @@ export class EditorComponent implements OnInit {
    * Triggers on modification of the text field and saves the note to disc.
    */
   onContentChanged(): void {
-    this.storage.saveNoteContent(this.note);
+    this.notebookService.saveNoteContent(this.noteContent)
   }
 }

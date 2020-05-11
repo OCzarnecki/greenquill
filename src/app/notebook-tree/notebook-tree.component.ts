@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {Folder} from '../model/folder';
 import {NotebookService} from '../notebook.service';
 
 /**
@@ -11,15 +10,7 @@ import {NotebookService} from '../notebook.service';
   styleUrls: ['./notebook-tree.component.less']
 })
 export class NotebookTreeComponent implements OnInit {
-  folders: readonly Folder[];
-
-  constructor(notebookService: NotebookService) {
-    this.folders = [];
-    notebookService.notebook$.subscribe(notebook => {
-      if (notebook) {
-        this.folders = notebook.folders;
-      }
-    });
+  constructor(public readonly notebookService: NotebookService) {
   }
 
   ngOnInit(): void {

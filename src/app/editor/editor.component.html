@@ -1,4 +1,4 @@
 <div id="notebook-editor">
-  <label for="notebook-text-area">Note {{note.id}}</label>
-  <textarea id="notebook-text-area" (input)="onContentChanged()" [(ngModel)]="note.content"></textarea>
+  <label id="note-title-label" for="notebook-text-area">{{noteInfo.title}}</label>
+  <textarea id="notebook-text-area" (input)="onContentChanged()" [(ngModel)]="noteContent.content"></textarea>
 </div>

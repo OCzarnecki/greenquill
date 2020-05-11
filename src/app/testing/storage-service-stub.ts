@@ -10,22 +10,27 @@ export class StorageServiceStub {
   public noteContent: NoteContent;
 
   // Usage hidden by angular DI
-  // noinspection JSUnusedGlobalSymbols
-  loadNotebook(): Promise<Notebook> {
-    return new Promise<Notebook>(resolve => resolve(this.notebook));
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+  loadNotebook(changeCallback: () => void): Notebook {
+    return this.notebook;
   }
 
   // Usage hidden by angular DI
   // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
-  loadNoteContent(id): Promise<NoteContent> {
-    return new Promise<NoteContent>(resolve => resolve(this.noteContent));
+  loadNoteContent$(id): Observable<NoteContent> {
+    return new Observable<NoteContent>(subscriber => subscriber.next(this.noteContent));
   }
 
   // Usage hidden by angular DI
   // noinspection JSUnusedGlobalSymbols
-  createNoteContent(): Observable<NoteContent> {
+  createNoteContent$(): Observable<NoteContent> {
     const noteContent = new NoteContent();
     noteContent.id = 'some id';
     return new Observable<NoteContent>(subscriber => subscriber.next(noteContent));
+  }
+
+  // Usage hidden by angular DI
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+  saveNoteContent(noteContent: NoteContent): void {
   }
 }

@@ -16,16 +16,18 @@ export class StorageService {
   private fsPromises;
 
   constructor() {
-    // Use electron's require function through this weird trick. The default one is overwritten by angular.
-    this.fs = window.require('fs');
-    this.fsPromises = this.fs.promises;
-
-    this.init();
   }
 
   private readonly _root = '.greenquill/';
 
-  private init() {
+  /**
+   * Initialise the storage service. Should be called once, on application startup.
+   */
+  public init() {
+    // Use electron's require function through this weird trick. The default one is overwritten by angular.
+    this.fs = window.require('fs');
+    this.fsPromises = this.fs.promises;
+
     if (!this.fs.existsSync(this._root)) {
       this.fs.mkdirSync(this._root + 'notes', {recursive: true});
     }
@@ -36,9 +38,12 @@ export class StorageService {
    * Loads the note content from disc.
    * @return A promise containing either the note, an IO-Error or a parsing error.
    */
-  public loadNoteContent(id: string): Promise<NoteContent> {
-    return this.fsPromises.readFile(`${this._root}notes/${id}.json`, 'utf-8')
-      .then(value => NoteContent.deserialize(JSON.parse(value)));
+  public loadNoteContent$(id: string): Observable<NoteContent> {
+    return new Observable<NoteContent>(subscriber => {
+      this.fsPromises.readFile(`${this._root}notes/${id}.json`, 'utf-8')
+        .then(value => NoteContent.deserialize(JSON.parse(value)))
+        .then(value => subscriber.next(value))
+    })
   }
 
   /**
@@ -52,13 +57,13 @@ export class StorageService {
   }
 
   /**
-   * Loads the notebook index from disc.
+   * Loads the notebook index from disc, synchronously.
    */
-  public loadNotebook(changeCallback): Promise<Notebook> {
-    return this.fsPromises.readFile(`${this._root}notebook.json`, 'utf-8').then(value => {
-      let json = JSON.parse(value);
-      return Notebook.deserialize(json, changeCallback);
-    });
+  public loadNotebook(changeCallback: () => void): Notebook {
+    const jsonStr = this.fs.readFileSync(
+      `${this._root}notebook.json`,
+      {encoding: 'utf-8'});
+    return Notebook.deserialize(JSON.parse(jsonStr), changeCallback)
   }
 
   public writeNotebook(notebook: Notebook) {
@@ -68,7 +73,7 @@ export class StorageService {
     ).catch(err => console.error(err));
   }
 
-  public createNoteContent(): Observable<NoteContent> {
+  public createNoteContent$(): Observable<NoteContent> {
     return new Observable<NoteContent>(subscriber => {
       const id = uuidv4();
       const noteContent = new NoteContent();

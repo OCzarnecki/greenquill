@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {Notebook} from './model/notebook';
 import {StorageService} from './desktop/storage.service';
 import {Observable} from 'rxjs';
-import {shareReplay} from 'rxjs/operators';
 import {NoteInfo} from './model/note-info';
 import {ShutdownHookService} from './desktop/shutdown-hook.service';
 import {Folder} from './model/folder';
+import {NoteContent} from './model/note-content';
 
 /**
  * Service that provides access to the notebook index.
@@ -17,25 +17,28 @@ export class NotebookService {
   private _dirty: boolean;
   private _dirtyCallback = this.markDirty.bind(this);
 
-  /**
-   * Observable that produces the notebook on subscription. No further values are produced after that.
-   */
-  public readonly notebook$: Observable<Notebook>;
+  private _notebook: Notebook;
+
+  get notebook(): Notebook {
+    return this._notebook;
+  }
 
   constructor(private storageService: StorageService, shutdownHookService: ShutdownHookService) {
     this._dirty = false;
-    // fetch notebook asynchronously
-    this.notebook$ = new Observable<Notebook>(subscriber => {
-      this.storageService.loadNotebook(this._dirtyCallback).then(value => {
-        subscriber.next(value);
-      });
-    }).pipe(shareReplay(1)); // and make it available to later subscribers
 
     shutdownHookService.addShutdownHook(() => {
       if (this._dirty) {
-        this.writeNotebook()
+        this.writeNotebook();
       }
     });
+  }
+
+  /**
+   * Initialise the service. To be called on application startup.
+   */
+  public init(): void {
+    console.debug('initializing NotebookService');
+    this._notebook = this.storageService.loadNotebook(this._dirtyCallback);
   }
 
   /**
@@ -45,7 +48,7 @@ export class NotebookService {
    * @param parent the folder the note will be placed in
    */
   public createNote(name: string, parent: Folder) {
-    this.storageService.createNoteContent().subscribe(noteContent => {
+    this.storageService.createNoteContent$().subscribe(noteContent => {
       console.debug('Created new NoteContent!');
       parent.addNote(new NoteInfo(noteContent.id, name, this._dirtyCallback));
     });
@@ -55,7 +58,6 @@ export class NotebookService {
    * Mark dirty and schedule write of notebook.
    */
   private markDirty() {
-    console.debug('Marked dirty!');
     if (!this._dirty) {
       this._dirty = true;
       setTimeout(() => {
@@ -65,11 +67,35 @@ export class NotebookService {
   }
 
   private writeNotebook() {
-    console.debug('Timeout passed!');
-    this.notebook$.subscribe(notebook => {
-      console.debug('Writing notebook!');
-      this._dirty = false;
-      this.storageService.writeNotebook(notebook);
-    });
+    this._dirty = false;
+    this.storageService.writeNotebook(this.notebook);
+  }
+
+  /**
+   * Get the NoteInfo for the note with given id.
+   * @param id the id to look for.
+   * @return the NoteInfo, or undefined if the id is invalid.
+   */
+  public getNoteInfo(id: string): NoteInfo {
+    return this.notebook.findNoteWithId(id);
+  }
+
+  /**
+   * Load NoteContent for a given NoteInfo from storage.
+   * @param noteInfo
+   * @return Observable that provides the NoteContent once
+   *         it is loaded
+   */
+  public loadNoteContent$(noteInfo: NoteInfo): Observable<NoteContent> {
+    return this.storageService.loadNoteContent$(noteInfo.id);
+  }
+
+  /**
+   * Save a given NoteContent to storage.
+   *
+   * @param noteContent to save
+   */
+  public saveNoteContent(noteContent: NoteContent): void {
+    this.storageService.saveNoteContent(noteContent);
   }
 }

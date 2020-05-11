@@ -5,6 +5,7 @@ import {StorageServiceStub} from '../testing/storage-service-stub';
 import {NotebookTreeComponent} from './notebook-tree.component';
 import {Notebook} from '../model/notebook';
 import {StorageService} from '../desktop/storage.service';
+import {NotebookService} from '../notebook.service';
 
 describe('NotebookTreeComponent', () => {
   let fixture: ComponentFixture<NotebookTreeComponent>;
@@ -15,11 +16,16 @@ describe('NotebookTreeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [NotebookTreeComponent],
-      providers: [{provide: StorageService, useValue: storage}]
+      providers: [
+        NotebookService,
+        {provide: StorageService, useValue: storage}
+      ]
     })
       .compileComponents();
 
     storage.notebook = new Notebook(folders);
+    TestBed.inject(NotebookService).init();
+
     fixture = TestBed.createComponent(NotebookTreeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -30,6 +36,7 @@ describe('NotebookTreeComponent', () => {
   });
 
   it('should have loaded its data from the StorageService after init', () => {
-    expect(component.folders).toEqual(folders);
+    // TODO this is more of a test for NotebookService
+    expect(component.notebookService.notebook.folders).toEqual(folders);
   });
 });
