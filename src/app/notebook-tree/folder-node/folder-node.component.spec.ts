@@ -63,12 +63,7 @@ describe('FolderNodeComponent', () => {
   });
 
   it('should display its contents iff open', function() {
-    setFolder(new Folder(
-      'root',
-      [new Folder('sub', [], [], () => void 0)],
-      [new NoteInfo('ID-1234', 'note', () => void 0)],
-      () => void 0
-    ));
+    setFolder(new Folder('root', [new Folder('sub', [], [], () => void 0)], [new NoteInfo('ID-1234', 'note', () => void 0)], () => void 0));
     expect(findRoot().querySelector('.folder-entry')).toBeFalsy('No folder displayed initially');
     expect(findRoot().querySelector('.note-entry')).toBeFalsy('No note displayed initially');
 

@@ -13,7 +13,7 @@ export class NoteInfo {
   constructor(
     private _id: string,
     private _title: string,
-    private _changeCallback: () => void) {
+    private _changeCallback: () => void = () => undefined) {
   }
 
   /**

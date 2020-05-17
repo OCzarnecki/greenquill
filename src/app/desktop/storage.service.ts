@@ -42,8 +42,8 @@ export class StorageService {
     return new Observable<NoteContent>(subscriber => {
       this.fsPromises.readFile(`${this._root}notes/${id}.json`, 'utf-8')
         .then(value => NoteContent.deserialize(JSON.parse(value)))
-        .then(value => subscriber.next(value))
-    })
+        .then(value => subscriber.next(value));
+    });
   }
 
   /**
@@ -52,7 +52,7 @@ export class StorageService {
    */
   public saveNoteContent(note: NoteContent) {
     this.fsPromises.writeFile(
-      `${this._root}notes/${note.id}.json`,
+      this.noteContentFile(note.id),
       JSON.stringify(note.serialize())).catch((err) => console.error(err));
   }
 
@@ -63,7 +63,7 @@ export class StorageService {
     const jsonStr = this.fs.readFileSync(
       `${this._root}notebook.json`,
       {encoding: 'utf-8'});
-    return Notebook.deserialize(JSON.parse(jsonStr), changeCallback)
+    return Notebook.deserialize(JSON.parse(jsonStr), changeCallback);
   }
 
   public writeNotebook(notebook: Notebook) {
@@ -81,5 +81,21 @@ export class StorageService {
       this.saveNoteContent(noteContent);
       subscriber.next(noteContent);
     });
+  }
+
+  /**
+   * Permanently remove the NoteContent of given id from storage.
+   * @param id
+   */
+  public deleteNoteContent(id: string): void {
+    this.fs.unlink(this.noteContentFile(id), (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  }
+
+  private noteContentFile(id: string): string {
+    return `${this._root}notes/${id}.json`;
   }
 }

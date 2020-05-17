@@ -2,6 +2,8 @@ import {NoteInfo} from './note-info';
 
 /**
  * A notebook folder, containing sub-folders and notes.
+ *
+ * When iterated over, yields all descendent folders and this folder.
  */
 export class Folder {
   /**
@@ -37,8 +39,39 @@ export class Folder {
     private _name: string,
     private _subFolders: Folder[],
     private _notes: NoteInfo[],
-    private _changeCallback: () => void
+    private _changeCallback: () => void = () => undefined
   ) {
+  }
+
+  public* [Symbol.iterator]() {
+    let queue: Folder[] = [this];
+    while (!(queue.length === 0)) {
+      let head = queue[0];
+      queue.shift();
+      queue.push(...head.subFolders);
+      yield head;
+    }
+  }
+
+  /**
+   * Add a note to this folder.
+   *
+   * @param noteInfo
+   */
+  public addNote(noteInfo: NoteInfo) {
+    this._notes.push(noteInfo);
+    this._changeCallback();
+  }
+
+  removeNote(id: string) {
+    const idx = this.notes.findIndex(note => note.id === id);
+    if (idx > -1) {
+      this._notes.splice(idx, 1);
+      this._changeCallback();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -62,10 +95,5 @@ export class Folder {
       'subFolders': this.subFolders.map(subFolder => subFolder.serialize()),
       'notes': this.notes.map(note => note.serialize())
     };
-  }
-
-  public addNote(noteInfo: NoteInfo) {
-    this._notes.push(noteInfo);
-    this._changeCallback();
   }
 }

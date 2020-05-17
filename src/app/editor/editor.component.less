@@ -1,3 +1,11 @@
+textarea {
+  font-family: sans-serif;
+  background-color: transparent;
+  border: 0;
+
+  resize: none;
+}
+
 #notebook-editor {
   height: 100%;
   width: 100%;
@@ -10,20 +18,39 @@
   align-content: stretch;
   align-items: stretch;
 
-  label {
-    font-size: larger;
-    font-weight: bold;
-    padding: 0 0 5px 0;
-  }
-
-  #notebook-text-area {
-    font-family: sans-serif;
+  #notebook-textarea {
     font-size: 16px;
-    background-color: transparent;
-    border: 0;
-
-    resize: none;
 
     flex-grow: 1;
   }
+}
+
+#note-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+#note-title-label {
+  font-size: larger;
+  font-weight: bold;
+
+  height: 3em;
+  padding: 0 0 5px 0;
+
+  flex-grow: 1;
+}
+
+#delete-note-button {
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+  img {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+#delete-note-button:hover {
+  background-color: lightblue;
 }

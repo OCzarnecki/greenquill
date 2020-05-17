@@ -31,7 +31,7 @@ describe('EditorComponentComponent', () => {
     notebook = new Notebook(
       [
         new Folder('folder', [], [
-          new NoteInfo(ID, TITLE, () => void 0)
+            new NoteInfo(ID, TITLE, () => void 0)
         ], () => void 0)
       ]
     );
@@ -71,7 +71,7 @@ describe('EditorComponentComponent', () => {
   });
 
   it('should display the note content', function() {
-    expect(fixture.nativeElement.querySelector('div > textarea').value)
+    expect(fixture.nativeElement.querySelector('#notebook-textarea').value)
       .toBe(CONTENT);
   });
 });

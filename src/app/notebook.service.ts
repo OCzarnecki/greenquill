@@ -45,7 +45,7 @@ export class NotebookService {
    * Create a new note with the provided name in the specified directory.
    *
    * @param name the display title of the note
-   * @param parent the folder the note will be placed in
+   * @param parent the folder the note will be placed in (must be part of the notebook)
    */
   public createNote(name: string, parent: Folder) {
     this.storageService.createNoteContent$().subscribe(noteContent => {
@@ -97,5 +97,15 @@ export class NotebookService {
    */
   public saveNoteContent(noteContent: NoteContent): void {
     this.storageService.saveNoteContent(noteContent);
+  }
+
+  /**
+   * Permanently deletes a note.
+   *
+   * @param noteInfo the NoteInfo of the note to delete
+   */
+  public deleteNote(noteInfo: NoteInfo): void {
+    this.storageService.deleteNoteContent(noteInfo.id);
+    this.notebook.deleteNoteInfo(noteInfo)
   }
 }

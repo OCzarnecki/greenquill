@@ -44,4 +44,14 @@ export class EditorComponent implements OnInit {
   onContentChanged(): void {
     this.notebookService.saveNoteContent(this.noteContent)
   }
+
+  /**
+   * Handler for delete-note-button.
+   */
+  clickDeleteNote() {
+    this.notebookService.deleteNote(this.noteInfo)
+
+    this.noteInfo = null;
+    this.noteContent = null;
+  }
 }

@@ -1,4 +1,11 @@
-<div id="notebook-editor">
-  <label id="note-title-label" for="notebook-text-area">{{noteInfo.title}}</label>
-  <textarea id="notebook-text-area" (input)="onContentChanged()" [(ngModel)]="noteContent.content"></textarea>
+<div *ngIf="!noteContent">
+  To start editing, select a note from the right or press Ctrl+N to create a new one.
+</div>
+
+<div *ngIf="noteContent" id="notebook-editor">
+  <div id="note-controls">
+    <textarea id="note-title-label">{{noteInfo.title}}</textarea>
+    <button id="delete-note-button" (click)="clickDeleteNote()"><img alt="trash" src="assets/icon-trash.svg"></button>
+  </div>
+  <textarea id="notebook-textarea" (input)="onContentChanged()" [(ngModel)]="noteContent.content"></textarea>
 </div>

@@ -1,8 +1,9 @@
 # Hierarchical node structure
 ## Critical
 - save where user left off and which dirs were unfolded
-- adding/removing dirs and notes
-- display and edit note title in editor
+- adding/removing dirs and notes (✓)
+- display (✓) and edit note title in editor
+- trash notes before deleting permanently
 
 ## Nice to have
 - error-robust file IO
